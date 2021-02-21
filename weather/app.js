@@ -25,6 +25,22 @@ app.use(function(req, res, next) {
   next(createError(404));
 });
 
+router.get('/', function(req, res) {
+  res.render('index', { weather: null, err: null });
+});
+
+router.post('/get_weather', async function (req,res) {
+  let city = req.body.city;
+  let url = http://api.openweathermap.org/data/2.5/weather?q=${city}&units=${UNITS}&appid=${OWM_API_KEY};
+
+  try {
+    let data = await fetch(url);
+    let weather = await data.json();
+  }catch(e){
+    logger.error(e)
+  }
+});
+
 // error handler
 app.use(function(err, req, res, next) {
   // set locals, only providing error in development
@@ -35,5 +51,6 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
-
+const OWM_API_KEY = process.env.OWM_API_KEY || 'invalid_key';
+const UNITS = process.env.UNITS || 'metric';
 module.exports = app;
